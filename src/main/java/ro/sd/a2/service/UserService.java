@@ -9,12 +9,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class UserService {
+public class UserService   {
 
     @Autowired
     private UserRepository userRepository;
 
     public List<AppUser> getAllUsers() {
-        return new ArrayList<>();
+        return userRepository.findAll();
     }
+
+    public AppUser getUserByUsernameAndPassword(String username, String password){
+        return userRepository.findByUsernameAndPassword(username,password);
+    }
+
+    public AppUser saveUser(AppUser appUser){
+        return userRepository.save(appUser);
+    }
+
 }

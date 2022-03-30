@@ -9,6 +9,8 @@ import java.util.List;
 @Setter
 @Getter
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class AppUser {
 
@@ -30,7 +32,6 @@ public class AppUser {
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<Appointment> appointmentList;
-
 
 
 }
