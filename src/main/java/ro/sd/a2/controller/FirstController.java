@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import ro.sd.a2.dto.UserLoginDTO;
 import ro.sd.a2.entity.AppUser;
 import ro.sd.a2.entity.UserRole;
+import ro.sd.a2.factory.UserFactory;
 import ro.sd.a2.service.UserRoleService;
 import ro.sd.a2.service.UserService;
 
@@ -68,15 +70,15 @@ public class FirstController {
     }
 
     @PostMapping("/signin")
-    public ModelAndView signIn(@RequestParam String username, @RequestParam String password){
-        AppUser user = userService.getUserByUsernameAndPassword(username,password);
+    public ModelAndView signIn(@RequestParam String email, @RequestParam String password){
+        AppUser user = userService.getUserByEmailAndPassword(email,password);
         ModelAndView mav = new ModelAndView();
         String errorMessage = null;
         if(user!=null)
             mav.setViewName("/home");
         else {
             log.error("User not found!");
-            errorMessage = "Incorect credentials";
+            errorMessage = "Incorrect credentials";
             mav.setViewName("/signin");
         }
         mav.addObject("errorMessage",errorMessage);
@@ -91,18 +93,18 @@ public class FirstController {
     }
 
     @PostMapping("/signup")
-    public ModelAndView signUp(@RequestParam String username, @RequestParam String password,@RequestParam String name){
+    public ModelAndView signUp(@RequestParam String email,@RequestParam String username, @RequestParam String password,@RequestParam String name){
         UserRole userRole = userRoleService.getUserRoleByName("Customer");
-        AppUser appUser = AppUser.builder().id(UUID.randomUUID().toString()).username(username).password(password).name(name).userRole(userRole).build();
+        UserFactory userFactory = new UserFactory();
+        UserLoginDTO appUser = UserLoginDTO.builder().username(username).password(password).name(name).email(email).build();
+        appUser = userFactory.createUser(userRole,appUser);
         AppUser newUser = userService.saveUser(appUser);
         ModelAndView mav = new ModelAndView();
         if(newUser!=null)
             mav.setViewName("/home");
         else{
-
             mav.setViewName("/signup");
         }
-
         return mav;
     }
 

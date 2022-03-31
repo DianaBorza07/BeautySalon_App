@@ -3,7 +3,7 @@ package ro.sd.a2.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.time.LocalDateTime;
 
 @Builder
 @Setter
@@ -17,7 +17,7 @@ public class Appointment {
     private String id;
 
     @Column
-    private Date date;
+    private LocalDateTime date;
 
     @ManyToOne
     @JoinColumn(name = "beauty_salon_id")

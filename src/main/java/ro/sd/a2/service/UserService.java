@@ -2,6 +2,7 @@ package ro.sd.a2.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ro.sd.a2.dto.UserLoginDTO;
 import ro.sd.a2.entity.AppUser;
 import ro.sd.a2.repository.UserRepository;
 
@@ -18,12 +19,14 @@ public class UserService   {
         return userRepository.findAll();
     }
 
-    public AppUser getUserByUsernameAndPassword(String username, String password){
-        return userRepository.findByUsernameAndPassword(username,password);
+    public AppUser getUserByEmailAndPassword(String email, String password){
+        return userRepository.findByEmailAndPassword(email,password);
     }
 
-    public AppUser saveUser(AppUser appUser){
+    public AppUser saveUser(UserLoginDTO user){
+        AppUser appUser = user.dtoToUser();
         return userRepository.save(appUser);
     }
+
 
 }

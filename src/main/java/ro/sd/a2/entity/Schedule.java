@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 @Builder
 @Setter
@@ -17,7 +18,7 @@ public class Schedule {
     private String id;
 
     @Column
-    private Date dayAndHour;
+    private LocalDateTime dayAndHour;
 
     @Column
     private Boolean available;
