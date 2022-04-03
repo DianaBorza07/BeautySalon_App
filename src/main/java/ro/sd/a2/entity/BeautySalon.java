@@ -33,6 +33,6 @@ public class BeautySalon {
     @JoinTable(name = "beautySalon_Service",
                 joinColumns = @JoinColumn(name ="id_b"),
                 inverseJoinColumns = @JoinColumn(name="id_s"))
-    private List<Service> services;
+    private List<SalonService> services;
 
 }

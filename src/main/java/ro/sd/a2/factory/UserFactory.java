@@ -8,7 +8,6 @@ import java.util.UUID;
 public class UserFactory {
 
     public UserLoginDTO createUser(UserRole userRole,UserLoginDTO user){
-       // UserLoginDTO user = new UserLoginDTO();
         user.setId(UUID.randomUUID().toString());
         user.setUserRole(userRole);
         return user;

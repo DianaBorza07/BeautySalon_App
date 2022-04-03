@@ -4,17 +4,73 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>First web app</title>
+    <title>Profile</title>
+
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} "/>
+    <link rel="stylesheet" th:href="style.css">
+
+    <style>
+        span1{
+            padding-right: 30px;
+            padding-left: 30px;
+        }
+    </style>
+
 </head>
 <body>
-<h1>Hello World for 30433</h1>
-<h2><i>YO YO</i></h2>
+<header class="navigation fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand font-tertiary h3" href="profile.html"></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation"
+                aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-<h1>Varianta1</h1>
-<h1 th:text="${fullUserObj.getName()}"> este numele acelui appUser</h1>
+        <div class="layer">
+            <h1 class="font-weight-bold " style="color:mediumpurple; font-size: xxx-large;alignment: center">Randevular</h1>
+        </div>
 
-<h1>Varianta2</h1>
-<h1 th:text="${numeStudent}"> este numele acelui appUser</h1>
+        <div class="collapse navbar-collapse text-center" id="navigation">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/app/home">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/app/signin">Sign In</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/app/signup">Sign Up</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+
+<section class="hero-area bg-primary" id="parallax">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-11 mx-auto">
+
+                    <span1 class="text-white font-tertiary " style="font-size: xxx-large;alignment: right" >Diana`s profile     </span1>
+                    <span1 class="align-self-auto" style="alignment: right">
+                        <img th:src="homeImg.jpg" style="width:504px;height:628px">
+                    </span1>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="layer" style="size: 100px">
+    <div class="container">
+        <div class="row">
+            <button class="button__icon">
+                <span class="button__text">Update profile</span>
+            </button>
+        </div>
+    </div>
+</section>
 
 </body>
 </html>

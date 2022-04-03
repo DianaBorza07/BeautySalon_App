@@ -24,14 +24,5 @@ public class UserLoginDTO {
 
     private String email;
 
-    public AppUser dtoToUser(){
-        AppUser appUser = new AppUser();
-        appUser.setId(id);
-        appUser.setUsername(username);
-        appUser.setUserRole(userRole);
-        appUser.setPassword(password);
-        appUser.setName(name);
-        appUser.setEmail(email);
-        return appUser;
-    }
+
 }

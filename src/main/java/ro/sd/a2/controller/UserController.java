@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import ro.sd.a2.dto.AppUserDTO;
 import ro.sd.a2.dto.UserLoginDTO;
 import ro.sd.a2.entity.AppUser;
 import ro.sd.a2.entity.UserRole;
@@ -16,49 +16,34 @@ import ro.sd.a2.factory.UserFactory;
 import ro.sd.a2.service.UserRoleService;
 import ro.sd.a2.service.UserService;
 
-import java.util.UUID;
+import java.util.List;
 
 
 @Controller
-public class FirstController {
+public class UserController {
 
-    private static final Logger log = LoggerFactory.getLogger(FirstController.class);
+    private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    private UserService userService ;//= new UserService();
+    private UserService userService ;
 
     @Autowired
     private UserRoleService userRoleService;
 
     @GetMapping("/profile")
     public ModelAndView showProfile() {
-        //validation if needed
-        //shall we log a little?
         ModelAndView mav = new ModelAndView();
 
-        log.info("Logged");
-
-        AppUser appUser =AppUser.builder().name("Bubu").build();
-        mav.addObject("fullUserObj", appUser);
-        mav.addObject("numeStudent", appUser.getName());
-        // adaugi x obiecte
         mav.setViewName("profile");
-        //log the final outcome: Success y?
         return mav;
     }
 
     @GetMapping("/home")
     public ModelAndView showHome() {
-        //validation if needed
-        //shall we log a little?
         ModelAndView mav = new ModelAndView();
-
-        //log.info("Logged");
-
-        //mav.addObject("grupa", 5);
-        // adaugi x obiecte
+        List<AppUserDTO> users = userService.getAllUsers();
+        mav.addObject("users",users);
         mav.setViewName("home");
-        //log the final outcome: Success y?
         return mav;
     }
 
@@ -71,11 +56,11 @@ public class FirstController {
 
     @PostMapping("/signin")
     public ModelAndView signIn(@RequestParam String email, @RequestParam String password){
-        AppUser user = userService.getUserByEmailAndPassword(email,password);
+        AppUserDTO user = userService.getUserByEmailAndPassword(email,password);
         ModelAndView mav = new ModelAndView();
         String errorMessage = null;
         if(user!=null)
-            mav.setViewName("/home");
+            mav.setViewName("/profile");
         else {
             log.error("User not found!");
             errorMessage = "Incorrect credentials";
@@ -101,11 +86,30 @@ public class FirstController {
         AppUser newUser = userService.saveUser(appUser);
         ModelAndView mav = new ModelAndView();
         if(newUser!=null)
-            mav.setViewName("/home");
+            mav.setViewName("/profile");
         else{
             mav.setViewName("/signup");
         }
         return mav;
     }
+
+    @PostMapping("/profile")
+    public ModelAndView updateUser(@RequestParam String newEmail,@RequestParam String newUsername){
+        ///////////// id hardcodat -> trebuie preluat id-ul userului logat
+        AppUserDTO user = AppUserDTO.builder().id("8945449f-c3f8-4278-a4fd-48ae3e857345").username(newUsername).email(newEmail).name("Diana Borza").build();
+        boolean var = userService.updateUser(user);
+        ModelAndView mav = new ModelAndView();
+        if(var) {
+            log.info("User updated successfully!");
+            mav.addObject("successMessage","User updated successfully!");
+        }
+        else {
+            log.error("Error on updating the user!");
+            mav.addObject("errorMessage","Error on updating the user!");
+        }
+        mav.setViewName("/profile");
+        return  mav;
+    }
+
 
 }

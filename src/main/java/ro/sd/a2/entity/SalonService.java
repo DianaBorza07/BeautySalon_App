@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Service {
+public class SalonService {
 
     @Id
     private String id;
@@ -23,6 +23,6 @@ public class Service {
     @ManyToMany(mappedBy = "services")
     private List<BeautySalon> beautySalonList;
 
-    @OneToMany(mappedBy ="service", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy ="salonService", cascade = CascadeType.ALL)
     private List<Appointment> appointments;
 }

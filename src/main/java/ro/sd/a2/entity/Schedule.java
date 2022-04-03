@@ -3,7 +3,6 @@ package ro.sd.a2.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.sql.Date;
 import java.time.LocalDateTime;
 
 @Builder
@@ -18,7 +17,7 @@ public class Schedule {
     private String id;
 
     @Column
-    private LocalDateTime dayAndHour;
+    private LocalDateTime dayHour;
 
     @Column
     private Boolean available;
