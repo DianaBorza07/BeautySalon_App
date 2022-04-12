@@ -1,19 +1,39 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Profile</title>
-
-    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} "/>
-    <link rel="stylesheet" th:href="style.css">
+   <link rel="stylesheet"  href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js">
+    <link rel="stylesheet" href="	https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js">
 
     <style>
-        span1{
-            padding-right: 30px;
-            padding-left: 30px;
+        .profile-head {
+            transform: translateY(5rem)
         }
+
+        .cover {
+            background-color: rgb(99, 39, 120);
+            background-size: cover;
+            background-repeat: no-repeat
+        }
+
+        body {
+            background: #654ea3;
+            background: linear-gradient(to right, #e96443, #904e95);
+            min-height: 100vh
+        }
+        .button{
+            text-decoration: none;
+            font-size: 25px;
+            color: #1fe8b6;
+            padding: 20px 50px;
+            border: 3px solid #1fe8b6;
+            margin: 20px;
+        }
+
     </style>
 
 </head>
@@ -46,31 +66,27 @@
     </nav>
 </header>
 
-
-<section class="hero-area bg-primary" id="parallax">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-11 mx-auto">
-
-                    <span1 class="text-white font-tertiary " style="font-size: xxx-large;alignment: right" >Diana`s profile     </span1>
-                    <span1 class="align-self-auto" style="alignment: right">
-                        <img th:src="homeImg.jpg" style="width:504px;height:628px">
-                    </span1>
-
+<div class="row py-5 px-4" >
+    <div class="col-md-5 mx-auto">
+        <div class="bg-white shadow rounded overflow-hidden">
+            <div class="px-4 pt-0 pb-4 cover">
+                    <div class="media-body mb-5 text-white align-content-center">
+                        <h4 class="mt-0 mb-0">Diana</h4>
+                    </div>
+            </div>
+            <div>
+                <span>
+                    <a class="button" href="/app/updateProfile" type="submit">Update profile</a>
+                </span>
+                <span >
+                    <a class="button" href="/app/viewUsers" type="submit">View users</a>
+                </span>
+                <span >
+                    <a class="button" href="/app/addSalon" type="submit">Add beauty salon</a>
+                </span>
             </div>
         </div>
     </div>
-</section>
-
-<section class="layer" style="size: 100px">
-    <div class="container">
-        <div class="row">
-            <button class="button__icon">
-                <span class="button__text">Update profile</span>
-            </button>
-        </div>
-    </div>
-</section>
-
+</div>
 </body>
 </html>

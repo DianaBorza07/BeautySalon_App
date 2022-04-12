@@ -38,6 +38,10 @@ public class UserService   {
 
     public boolean updateUser(AppUserDTO appUser){
         Optional<AppUser> user = userRepository.findById(appUser.getId());
+        if(appUser.getUsername()!=null)
+            user.get().setUsername(appUser.getUsername());
+        if(appUser.getEmail()!=null)
+            user.get().setEmail(appUser.getEmail());
         if(!user.isPresent())
             return  false;
         try {

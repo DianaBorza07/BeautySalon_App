@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -93,11 +94,12 @@ public class UserController {
         return mav;
     }
 
-    @PostMapping("/profile")
+    @PostMapping("/updateProfile")
     public ModelAndView updateUser(@RequestParam String newEmail,@RequestParam String newUsername){
         ///////////// id hardcodat -> trebuie preluat id-ul userului logat
         AppUserDTO user = AppUserDTO.builder().id("8945449f-c3f8-4278-a4fd-48ae3e857345").username(newUsername).email(newEmail).name("Diana Borza").build();
         boolean var = userService.updateUser(user);
+
         ModelAndView mav = new ModelAndView();
         if(var) {
             log.info("User updated successfully!");
@@ -107,9 +109,26 @@ public class UserController {
             log.error("Error on updating the user!");
             mav.addObject("errorMessage","Error on updating the user!");
         }
-        mav.setViewName("/profile");
+        mav.setViewName("/updateProfile");
         return  mav;
     }
+
+    @GetMapping("/updateProfile")
+    public ModelAndView showUpdateProfile() {
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/updateProfile");
+        return mav;
+    }
+
+    @GetMapping("/viewUsers")
+    public ModelAndView showUsers() {
+        ModelAndView mav = new ModelAndView();
+        List<AppUserDTO> userDTOList = userService.getAllUsers();
+        mav.addObject("users", userDTOList);
+        mav.setViewName("/viewUsers");
+        return mav;
+    }
+
 
 
 }

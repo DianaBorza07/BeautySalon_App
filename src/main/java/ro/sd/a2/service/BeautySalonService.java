@@ -2,18 +2,15 @@ package ro.sd.a2.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ro.sd.a2.dto.AppUserDTO;
 import ro.sd.a2.dto.BeautySalonDTO;
-import ro.sd.a2.entity.AppUser;
+import ro.sd.a2.entity.Address;
 import ro.sd.a2.entity.BeautySalon;
 import ro.sd.a2.mapper.BeautySalonMapper;
-import ro.sd.a2.mapper.UserMapper;
 import ro.sd.a2.repository.BeautySalonRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+
 
 @Service
 public class BeautySalonService {
@@ -47,6 +44,17 @@ public class BeautySalonService {
         if(beautySalon == null)
             return  false;
        beautySalonRepository.delete(beautySalon);
+        return  true;
+    }
+
+    public boolean addAddress(BeautySalonDTO beautySalonDTO,Address address){
+        BeautySalon beautySalon = beautySalonRepository.findByName(beautySalonDTO.getName());
+        if(beautySalon == null)
+            return  false;
+        beautySalon.setAddress(address);
+        BeautySalon beautySalon1 = beautySalonRepository.save(beautySalon);
+        if(beautySalon1==null)
+            return false;
         return  true;
     }
 }
