@@ -22,11 +22,16 @@ public class BeautySalonService {
         return beautySalonRepository.save(salon);
     }
 
-    public List<BeautySalonDTO> getAllSalons(){
+    public List<BeautySalonDTO> getAllSalonsDTO(){
         List<BeautySalon> beautySalonList = beautySalonRepository.findAll();
         List<BeautySalonDTO> beautySalonDTOS = new ArrayList<>();
         beautySalonList.stream().forEach(b->beautySalonDTOS.add(BeautySalonMapper.beautySalonToDto(b)));
         return beautySalonDTOS;
+    }
+
+    public List<BeautySalon> getAllSalons(){
+        return beautySalonRepository.findAll();
+
     }
 
     public boolean updateBeautySalon(BeautySalonDTO salonDTO){

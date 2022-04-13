@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>App users</title>
+    <title>Beauty Salons</title>
     <style>
         h1{
             font-size: 30px;
@@ -97,19 +97,18 @@
     </style>
 </head>
 <body>
-
-<h1>Users</h1>
+<h1>Beauty salons</h1>
 
 <table>
     <tr>
-        <th>NAME</th>
-        <th>USERNAME</th>
-        <th>EMAIL</th>
+        <th>BEAUTY SALON NAME</th>
+        <th>STREET NAME</th>
+        <th>STREET ADDRESS</th>
     </tr>
-    <tr th:each="us : ${users}">
-        <td th:text="${us.getName()}"></td>
-        <td th:text="${us.getUsername()}"></td>
-        <td th:text="${us.getEmail()}"></td>
+    <tr th:each="s : ${salonList}">
+        <td th:text="${s.getName()}"></td>
+        <td th:text="${s.getAddress().getStreet()}"></td>
+        <td th:text="${s.getAddress().getNumber()}"></td>
     </tr>
 </table>
 

@@ -16,18 +16,41 @@ import ro.sd.a2.service.AddressService;
 import ro.sd.a2.service.BeautySalonService;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.List;
 import java.util.UUID;
+
+/**
+ * Controller for the beauty salon
+ * @author Diana Borza
+ */
 @Controller
 public class BeautySalonController {
+    /**
+     * Logger for displaying in the console error/info/success messages
+     */
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
+
+    /**
+     * Message to display if some requirements are empty
+     */
     private StringBuilder insertMessage = new StringBuilder("Please insert ");
 
+    /**
+     * The service for the beauty salon
+     */
     @Autowired
     private BeautySalonService beautySalonService ;
 
+    /**
+     * The service for the address of the beauty salon
+     */
     @Autowired
     private AddressService addressService;
 
+    /**
+     * Get method that returns the view for the html page that allow provider to add new salon
+     * @return model and view for the html page
+     */
     @GetMapping("/addSalon")
     public ModelAndView showNewSalon() {
         ModelAndView mav = new ModelAndView();
@@ -35,6 +58,13 @@ public class BeautySalonController {
         return mav;
     }
 
+    /**
+     * Post method that inserts into database the new salon with the specified fields by the provider
+     * @param name the name of the beauty salon
+     * @param number the street number of the beauty salon
+     * @param street the street of the beauty salon
+     * @return model and view for the html page
+     */
     @PostMapping("/addSalon")
     public ModelAndView addNewSalon(@RequestParam String name, @RequestParam String number, @RequestParam String street){
         ModelAndView mav = new ModelAndView();
@@ -47,7 +77,6 @@ public class BeautySalonController {
         if(!(insertMessage.compareTo(new StringBuilder("Please insert "))==0)) {
             String message = insertMessage.toString();
             mav.addObject("errorMessage", message);
-            System.out.println(insertMessage);
             insertMessage.delete(0,insertMessage.length());
             insertMessage.append("Please insert ");
         }
@@ -72,6 +101,19 @@ public class BeautySalonController {
             }
         }
         mav.setViewName("/addSalon");
+        return mav;
+    }
+
+    /**
+     * Method that lists all salons form the database
+     * @return model and view for the html page
+     */
+    @GetMapping("/listSalons")
+    public ModelAndView showSalons() {
+        ModelAndView mav = new ModelAndView();
+        List<BeautySalon> beautySalonList = beautySalonService.getAllSalons();
+        mav.addObject("salonList",beautySalonList);
+        mav.setViewName("/listSalons");
         return mav;
     }
 }

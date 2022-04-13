@@ -1,5 +1,6 @@
 package ro.sd.a2.controller;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,35 +20,60 @@ import ro.sd.a2.service.UserService;
 
 import java.util.List;
 
-
+/**
+ * Controller class for the user operations
+ * @author Diana Borza
+ */
 @Controller
 public class UserController {
-
+    /**
+     * Logger for displaying in the console error/info/success messages
+     */
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
+    /**
+     * Message to display if some requirements are empty
+     */
+    private StringBuilder insertMessage = new StringBuilder("Please insert ");
+
+    /**
+     * The service for the user
+     */
     @Autowired
     private UserService userService ;
 
+    /**
+     * The service for the user role
+     */
     @Autowired
     private UserRoleService userRoleService;
 
+    /**
+     * Get method for displaying the profile html page
+     * @return model and view for the html page
+     */
     @GetMapping("/profile")
     public ModelAndView showProfile() {
         ModelAndView mav = new ModelAndView();
-
         mav.setViewName("profile");
         return mav;
     }
 
+    /**
+     * Get method for displaying the home page
+     * @return model and view for the html page
+     */
     @GetMapping("/home")
     public ModelAndView showHome() {
         ModelAndView mav = new ModelAndView();
-        List<AppUserDTO> users = userService.getAllUsers();
-        mav.addObject("users",users);
         mav.setViewName("home");
         return mav;
     }
 
+    /**
+     * Get method for displaying sing in page
+     * @return model and view for the html page
+     */
     @GetMapping("/signin")
     public ModelAndView showSignIn() {
         ModelAndView mav = new ModelAndView();
@@ -55,22 +81,48 @@ public class UserController {
         return mav;
     }
 
+    /**
+     * Post method that searches the user into database in order to log in
+     * @param email user email
+     * @param password user password
+     * @return model and view for the html page
+     */
     @PostMapping("/signin")
     public ModelAndView signIn(@RequestParam String email, @RequestParam String password){
-        AppUserDTO user = userService.getUserByEmailAndPassword(email,password);
         ModelAndView mav = new ModelAndView();
-        String errorMessage = null;
-        if(user!=null)
-            mav.setViewName("/profile");
-        else {
-            log.error("User not found!");
-            errorMessage = "Incorrect credentials";
+        if(StringUtils.isBlank(email))
+            insertMessage.append("email ");
+        if(StringUtils.isBlank(password))
+            insertMessage.append("password ");
+        if(!(insertMessage.compareTo(new StringBuilder("Please insert "))==0)) {
+            String message = insertMessage.toString();
+            mav.addObject("errorMessage", message);
+            insertMessage.delete(0,insertMessage.length());
+            insertMessage.append("Please insert ");
             mav.setViewName("/signin");
         }
-        mav.addObject("errorMessage",errorMessage);
+        else {
+            AppUserDTO user = userService.getUserByEmailAndPassword(email, password);
+            String errorMessage = null;
+            if (user != null) {
+                log.info("User logged in!");
+                mav.setViewName("/profile");
+            }
+            else {
+                log.error("User not found!");
+                errorMessage = "Incorrect credentials";
+                mav.setViewName("/signin");
+            }
+
+            mav.addObject("errorMessage", errorMessage);
+        }
         return mav;
     }
 
+    /**
+     * Get method for displaying sign up page
+     * @return model and view for the html page
+     */
     @GetMapping("/signup")
     public ModelAndView showSignUp() {
         ModelAndView mav = new ModelAndView();
@@ -78,41 +130,91 @@ public class UserController {
         return mav;
     }
 
+    /**
+     * Post method that adds new user into database
+     * @param email user email
+     * @param username user username
+     * @param password user password
+     * @param name user name
+     * @return model and view for the html page
+     */
     @PostMapping("/signup")
     public ModelAndView signUp(@RequestParam String email,@RequestParam String username, @RequestParam String password,@RequestParam String name){
-        UserRole userRole = userRoleService.getUserRoleByName("Customer");
-        UserFactory userFactory = new UserFactory();
-        UserLoginDTO appUser = UserLoginDTO.builder().username(username).password(password).name(name).email(email).build();
-        appUser = userFactory.createUser(userRole,appUser);
-        AppUser newUser = userService.saveUser(appUser);
         ModelAndView mav = new ModelAndView();
-        if(newUser!=null)
-            mav.setViewName("/profile");
-        else{
+        if(StringUtils.isBlank(email))
+            insertMessage.append("email ");
+        if(StringUtils.isBlank(username))
+            insertMessage.append("username ");
+        if(StringUtils.isBlank(name))
+            insertMessage.append("name ");
+        if(StringUtils.isBlank(password))
+            insertMessage.append("password ");
+        if(!(insertMessage.compareTo(new StringBuilder("Please insert "))==0)) {
+            String message = insertMessage.toString();
+            mav.addObject("errorMessage", message);
+            insertMessage.delete(0,insertMessage.length());
+            insertMessage.append("Please insert ");
             mav.setViewName("/signup");
+        }
+        else {
+            UserRole userRole = userRoleService.getUserRoleByName("Customer");
+            UserFactory userFactory = new UserFactory();
+            UserLoginDTO appUser = UserLoginDTO.builder().username(username).password(password).name(name).email(email).build();
+            appUser = userFactory.createUser(userRole, appUser);
+            AppUser newUser = userService.saveUser(appUser);
+
+            if (newUser != null) {
+                mav.setViewName("/profile");
+                log.info("User created successfully!");
+            }
+            else {
+                mav.setViewName("/signup");
+                log.error("Error on creating the user");
+            }
         }
         return mav;
     }
 
+    /**
+     * Post method that modifies the user email and username
+     * @param newEmail user new email
+     * @param newUsername user new username
+     * @return model and view for the html page
+     */
     @PostMapping("/updateProfile")
     public ModelAndView updateUser(@RequestParam String newEmail,@RequestParam String newUsername){
-        ///////////// id hardcodat -> trebuie preluat id-ul userului logat
-        AppUserDTO user = AppUserDTO.builder().id("8945449f-c3f8-4278-a4fd-48ae3e857345").username(newUsername).email(newEmail).name("Diana Borza").build();
-        boolean var = userService.updateUser(user);
-
         ModelAndView mav = new ModelAndView();
-        if(var) {
-            log.info("User updated successfully!");
-            mav.addObject("successMessage","User updated successfully!");
+        if(StringUtils.isBlank(newEmail))
+            insertMessage.append("new email ");
+        if(StringUtils.isBlank(newUsername))
+            insertMessage.append("new username ");
+        if(!(insertMessage.compareTo(new StringBuilder("Please insert "))==0)) {
+            String message = insertMessage.toString();
+            mav.addObject("errorMessage", message);
+            insertMessage.delete(0,insertMessage.length());
+            insertMessage.append("Please insert ");
         }
         else {
-            log.error("Error on updating the user!");
-            mav.addObject("errorMessage","Error on updating the user!");
+            ///////////// id hardcodat -> trebuie preluat id-ul userului logat
+            AppUserDTO user = AppUserDTO.builder().id("8945449f-c3f8-4278-a4fd-48ae3e857345").username(newUsername).email(newEmail).name("Diana Borza").build();
+            boolean var = userService.updateUser(user);
+
+            if (var) {
+                log.info("User updated successfully!");
+                mav.addObject("successMessage", "User updated successfully!");
+            } else {
+                log.error("Error on updating the user!");
+                mav.addObject("errorMessage", "Error on updating the user!");
+            }
         }
         mav.setViewName("/updateProfile");
         return  mav;
     }
 
+    /**
+     * Get method for displaying the page for updating the user profile
+     * @return model and view for the html page
+     */
     @GetMapping("/updateProfile")
     public ModelAndView showUpdateProfile() {
         ModelAndView mav = new ModelAndView();
@@ -120,6 +222,10 @@ public class UserController {
         return mav;
     }
 
+    /**
+     * Get method for displaying all the users from the database
+     * @return model and view for the html page
+     */
     @GetMapping("/viewUsers")
     public ModelAndView showUsers() {
         ModelAndView mav = new ModelAndView();
