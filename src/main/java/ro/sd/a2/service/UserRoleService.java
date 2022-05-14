@@ -13,4 +13,5 @@ public class UserRoleService {
     public UserRole getUserRoleByName(String roleName){
         return userRoleRepository.findByRoleName(roleName);
     }
+
 }

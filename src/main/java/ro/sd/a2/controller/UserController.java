@@ -4,17 +4,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import ro.sd.a2.dto.AppUserDTO;
 import ro.sd.a2.dto.UserLoginDTO;
 import ro.sd.a2.entity.AppUser;
 import ro.sd.a2.entity.UserRole;
 import ro.sd.a2.factory.UserFactory;
+import ro.sd.a2.service.ProducerService;
 import ro.sd.a2.service.UserRoleService;
 import ro.sd.a2.service.UserService;
 
@@ -24,7 +25,7 @@ import java.util.List;
  * Controller class for the user operations
  * @author Diana Borza
  */
-@Controller
+@RestController
 public class UserController {
     /**
      * Logger for displaying in the console error/info/success messages
@@ -48,6 +49,13 @@ public class UserController {
     @Autowired
     private UserRoleService userRoleService;
 
+    @Autowired
+    private ProducerService producerService;
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
+    @Value("${app.message}")
+    private String response;
+
     /**
      * Get method for displaying the profile html page
      * @return model and view for the html page
@@ -63,12 +71,12 @@ public class UserController {
      * Get method for displaying the home page
      * @return model and view for the html page
      */
-    @GetMapping("/home")
+   /* @GetMapping("/home")
     public ModelAndView showHome() {
         ModelAndView mav = new ModelAndView();
         mav.setViewName("home");
         return mav;
-    }
+    }*/
 
     /**
      * Get method for displaying sing in page
@@ -129,7 +137,18 @@ public class UserController {
         mav.setViewName("signup");
         return mav;
     }
+    
 
+    @RequestMapping(value="/signup", method = RequestMethod.POST)
+    public ResponseEntity<String> sendMessage(@ModelAttribute(value="user") UserLoginDTO user) {
+        System.out.println("User: "+user.getUsername());
+        System.out.println("Email: "+user.getEmail());
+        producerService.sendMessage(user);
+        //UserController userController = new UserController();
+        signUp(user.getEmail(),user.getUsername(),user.getPassword(),user.getName());
+        logger.info("email sent: ");
+        return ResponseEntity.ok(response);
+    }
     /**
      * Post method that adds new user into database
      * @param email user email
@@ -138,8 +157,7 @@ public class UserController {
      * @param name user name
      * @return model and view for the html page
      */
-    @PostMapping("/signup")
-    public ModelAndView signUp(@RequestParam String email,@RequestParam String username, @RequestParam String password,@RequestParam String name){
+    public ModelAndView signUp(String email, String username, String password, String name){
         ModelAndView mav = new ModelAndView();
         if(StringUtils.isBlank(email))
             insertMessage.append("email ");

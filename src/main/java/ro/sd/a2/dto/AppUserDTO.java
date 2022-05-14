@@ -1,6 +1,7 @@
 package ro.sd.a2.dto;
 
 import lombok.*;
+import org.springframework.stereotype.Component;
 
 @Builder
 @Setter
@@ -8,6 +9,7 @@ import lombok.*;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@Component
 public class AppUserDTO {
 
     private String id;

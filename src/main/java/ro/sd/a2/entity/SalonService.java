@@ -20,6 +20,9 @@ public class SalonService {
     @Column
     private String name;
 
+    @Column
+    private float price;
+
     @ManyToMany(mappedBy = "services")
     private List<BeautySalon> beautySalonList;
 
