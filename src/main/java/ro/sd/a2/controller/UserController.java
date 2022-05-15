@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import ro.sd.a2.dto.AppUserDTO;
@@ -19,6 +20,7 @@ import ro.sd.a2.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -269,6 +271,20 @@ public class UserController {
         mav.setViewName("/signin");
         return mav;
     }
+
+    @PostMapping("/makeAdmin")
+    public ModelAndView makeAdmin(@ModelAttribute(value="user") AppUser user){
+        ModelAndView mav = new ModelAndView();
+        System.out.println("Controller: "+user.getEmail());
+        boolean var = userService.changeRole(user.getEmail());
+        mav.setViewName("/viewUsers");
+        List<AppUserDTO> userDTOList = userService.getAllUsers();
+        mav.addObject("users", userDTOList);
+        mav.setViewName("/viewUsers");
+        return mav;
+    }
+
+
 
 
 

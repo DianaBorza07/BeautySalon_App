@@ -7,14 +7,28 @@
     <title>Profile</title>
 
     <style>
-        * {
+        *,
+        *::before,
+        *::after {
             box-sizing: border-box;
+        }
+
+        div{
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         body {
             background: linear-gradient(to right, #853a8d, #dda6e0);
             min-height: 100vh;
             margin: 0;
+            align-items: center;
+            justify-content: center;
+            align-content: center;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
         }
 
         ul {
@@ -23,6 +37,11 @@
             list-style: none;
         }
 
+        span{
+            display:flex;
+            justify-content: center;
+            align-items: center;
+        }
 
         h2,
         h3,
@@ -166,26 +185,43 @@
         .btn-8 span:hover:after {
             width: 100%;
         }
+
+        img{
+            max-width: 50%;
+            max-height: 50%;
+            display: block; /* remove extra space below image */
+        }
     </style>
 
 </head>
-<body>
 <header class="header">
     <h1 class="logo"><a href="#">Randevular</a></h1>
-    <ul class="main-nav">
-        <li><a href="/app/profile">Home</a></li>
-        <li><a href="/app/signin">Sign In</a></li>
-        <li><a href="/app/signup">Sign Up</a></li>
-        <li><form th:action="@{/destroy}" method = 'POST'></form><a href="/app/signin">Log out</a></li>
-    </ul>
+    <div class="main-nav">
+        <span><a href="/app/profile">Home</a></span>
+        <span><a href="/app/signin">Sign In</a></span>
+        <span><a href="/app/signup">Sign Up</a></span>
+        <span><form th:action="@{/destroy}" method = 'POST'></form><a href="/app/signin">Log out</a></span>
+    </div>
 </header>
+<body>
+<span>
+    <div>
+        <button class="custom-btn btn-8" ><a href="/app/updateProfile" class="custom-btn btn-8"> Update profile </a></button>
 
+        <button class="custom-btn btn-8" ><a href="/app/viewUsers" class="custom-btn btn-8"> View users </a></button>
+
+        <button class="custom-btn btn-8" ><a href="/app/addSalon" class="custom-btn btn-8">Add beauty salon</a></button>
+
+        <button class="custom-btn btn-8" ><a href="/app/listSalons" class="custom-btn btn-8"> View beauty salons</a></button>
+
+        <button class="custom-btn btn-8" ><a href="/app/addService" class="custom-btn btn-8"> Add services</a></button>
+    </div>
+
+</span>
+<span>
 <div>
-    <button class="custom-btn btn-8" ><a href="/app/updateProfile" class="custom-btn btn-8"> Update profile </a></button>
-    <button class="custom-btn btn-8" ><a href="/app/viewUsers" class="custom-btn btn-8"> View users </a></button>
-    <button class="custom-btn btn-8" ><a href="/app/addSalon" class="custom-btn btn-8">Add beauty salon</a></button>
-    <button class="custom-btn btn-8" ><a href="/app/listSalons" class="custom-btn btn-8"> View beauty salons</a></button>
-    <button class="custom-btn btn-8" ><a href="/app/addService" class="custom-btn btn-8"> Add services</a></button>
+    <img src="logo.png" alt="Salon logo">
 </div>
+</span>
 </body>
 </html>

@@ -1,5 +1,6 @@
 package ro.sd.a2.controller;
 
+import org.hibernate.type.descriptor.java.UUIDTypeDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +13,16 @@ import ro.sd.a2.dto.AddressDTO;
 import ro.sd.a2.dto.BeautySalonDTO;
 import ro.sd.a2.entity.Address;
 import ro.sd.a2.entity.BeautySalon;
+import ro.sd.a2.entity.Schedule;
+import ro.sd.a2.mapper.BeautySalonMapper;
 import ro.sd.a2.service.AddressService;
 import ro.sd.a2.service.BeautySalonService;
 import org.apache.commons.lang3.StringUtils;
+import ro.sd.a2.service.ScheduleService;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoField;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -94,6 +101,7 @@ public class BeautySalonController {
             boolean var = beautySalonService.addAddress(beautySalonDTO, address);
             if (var) {
                 mav.addObject("successMessage", "Beauty salon added successfully");
+                init();
                 log.info("Beauty salon added successfully!");
             } else {
                 mav.addObject("errorMessage", "Error on saving the beauty salon!");
@@ -115,5 +123,37 @@ public class BeautySalonController {
         mav.addObject("salonList",beautySalonList);
         mav.setViewName("/listSalons");
         return mav;
+    }
+    @Autowired
+    private ScheduleService scheduleService;
+
+    public void init(){
+        LocalDateTime a = LocalDateTime.of(2022, 5, 1, 10, 0);
+        List<BeautySalon> beautySalonList = beautySalonService.getAllSalons();
+        List<LocalDateTime> localDateTimes = new ArrayList<>();
+        LocalDateTime aux;
+        for(int day = 0;day<31;day++) {
+            if(a.get(ChronoField.DAY_OF_WEEK)+day != 6 && a.get(ChronoField.DAY_OF_WEEK)+day!=7 )
+                for (int i = 0; i < 7; i++) {
+                         aux = LocalDateTime.of(a.getYear(), a.getMonth(), a.getDayOfMonth()+day, a.getHour() + i, 0);
+                         if(aux!=null)
+                             localDateTimes.add(aux);
+                }
+            else if(a.get(ChronoField.DAY_OF_WEEK)+day==6){
+                for (int i = 0; i < 4; i++) {
+                    aux = LocalDateTime.of(a.getYear(), a.getMonth(), a.getDayOfMonth()+day, a.getHour() + i, 0);
+                    if(aux!=null)
+                        localDateTimes.add(aux);
+                }
+            }
+        }
+
+        beautySalonList.stream().forEach(beautySalon ->
+              localDateTimes.stream().forEach(dateTime -> {
+                Schedule schedule1 = Schedule.builder().id(UUID.randomUUID().toString()).available(true).beautySalon(beautySalon).dayHour(dateTime).build();
+                scheduleService.saveSchedule(schedule1);
+            })
+        );
+
     }
 }

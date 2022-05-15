@@ -18,9 +18,9 @@ public class ScheduleService {
     @Autowired
     private ScheduleRepository scheduleRepository;
 
-    public Schedule saveSchedule(ScheduleDTO schedule) {
-        Schedule schedule1 = ScheduleMapper.dtoToSchedule(schedule);
-        return scheduleRepository.save(schedule1);
+    public Schedule saveSchedule(Schedule schedule) {
+       // Schedule schedule1 = ScheduleMapper.dtoToSchedule(schedule);
+        return scheduleRepository.save(schedule);
     }
     public List<ScheduleDTO> getAllSchedules(){
         List<Schedule> scheduleList = scheduleRepository.findAll();

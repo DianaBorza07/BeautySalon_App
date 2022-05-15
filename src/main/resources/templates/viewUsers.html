@@ -94,24 +94,82 @@
         ::-webkit-scrollbar-thumb {
             -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
         }
+        button {
+            background: transparent;
+            border: 0;
+            padding: 0;
+            cursor: pointer;
+            outline: 0;
+            -webkit-appearance: none;
+        }
+
+        /* Custom */
+        button {
+            display: inline-block;
+            position: relative;
+            padding: 5px 5px;
+            top: 0;
+            font-size: 20px;
+            font-family: "Open Sans", Helvetica;
+            border-radius: 4px;
+            border-bottom: 1px solid rgb(28, 134, 227);
+            background: rgb(22, 181, 230);
+            color: #fff;
+            box-shadow: 0px 0px 0px rgba( 15, 165, 60, 0.1 );
+            margin-top:5px;
+
+            -webkit-transform: translateZ(0);
+            -moz-transform: translateZ(0);
+            -ms-transform: translateZ(0);
+            transform: translateZ(0);
+
+            -webkit-transition: all 0.2s ease;
+            -moz-transition: all 0.2s ease;
+            -ms-transition: all 0.2s ease;
+            transition: all 0.2s ease;
+        }
+
+        button:hover {
+            top: -10px;
+            box-shadow: 0px 10px 10px rgb(15, 70, 165);
+
+            -webkit-transform: rotateX(20deg);
+            -moz-transform: rotateX(20deg);
+            -ms-transform: rotateX(20deg);
+            transform: rotateX(20deg);
+        }
+
+        button:active {
+            top: 0px;
+            box-shadow: 0px 0px 0px rgba( 15, 165, 60, 0.0 );
+            background: rgba(22, 181, 230, 1 );
+        }
     </style>
 </head>
 <body>
 
 <h1>Users</h1>
+    <table>
+        <tr>
+            <th>NAME</th>
+            <th>USERNAME</th>
+            <th>EMAIL</th>
+        </tr>
+        <tr th:each="us : ${users}">
+            <form class="align-content-center" th:action="@{/makeAdmin}" method = 'POST' th:object="${user}">
+            <td th:text="${us.getName()}" ></td>
+            <td th:text="${us.getUsername()}"></td>
+            <td th:text="${us.getEmail()}"></td>
+            <td th:text="${us.getUserRole().getRoleName()}"></td>
 
-<table>
-    <tr>
-        <th>NAME</th>
-        <th>USERNAME</th>
-        <th>EMAIL</th>
-    </tr>
-    <tr th:each="us : ${users}">
-        <td th:text="${us.getName()}"></td>
-        <td th:text="${us.getUsername()}"></td>
-        <td th:text="${us.getEmail()}"></td>
-    </tr>
-</table>
+            <td><input type="hidden" th:value="${us.getEmail()}" name="email"/>
+                    <button type="submit">
+                        Change role
+                    </button>
+            </td>
+            </form>
+        </tr>
+    </table>
 
 <p>
     <a href="../home.html" th:href="@{/profile}">Return to profile</a>
