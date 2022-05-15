@@ -3,16 +3,16 @@ package ro.sd.a2.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 @Builder
 @Setter
 @Getter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class UserRole {
+public class UserRole implements Serializable {
 
     @Id
     private String id;

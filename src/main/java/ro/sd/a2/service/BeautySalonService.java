@@ -34,11 +34,11 @@ public class BeautySalonService {
 
     }
 
-    public boolean updateBeautySalon(BeautySalonDTO salonDTO){
-        BeautySalon beautySalon = beautySalonRepository.findByName(salonDTO.getName());
-        if(beautySalon == null)
+    public boolean updateBeautySalon(BeautySalon salonDTO){
+        //BeautySalon beautySalon = beautySalonRepository.findByName(salonDTO.getName());
+        if(salonDTO == null)
             return  false;
-        BeautySalon beautySalon1 = beautySalonRepository.save(beautySalon);
+        BeautySalon beautySalon1 = beautySalonRepository.save(salonDTO);
         if(beautySalon1==null)
             return false;
         return  true;
@@ -61,5 +61,9 @@ public class BeautySalonService {
         if(beautySalon1==null)
             return false;
         return  true;
+    }
+
+    public BeautySalon getSalonByName(String name){
+        return beautySalonRepository.findByName(name);
     }
 }

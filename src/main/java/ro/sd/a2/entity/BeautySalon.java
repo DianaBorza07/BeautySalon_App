@@ -30,7 +30,7 @@ public class BeautySalon {
     private List<Appointment> appointments;
 
     @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "beautySalon_Service",
+    @JoinTable(name = "beautySalon_salonService",
                 joinColumns = @JoinColumn(name ="id_b"),
                 inverseJoinColumns = @JoinColumn(name="id_s"))
     private List<SalonService> services;

@@ -33,6 +33,8 @@ public class UserService   {
 
     public AppUser saveUser(UserLoginDTO user){
         AppUser appUser = UserMapper.dtoLoginUserToAppUser(user);
+        if(userRepository.findByEmailAndUsername(user.getEmail(),user.getUsername())==null)
+            return null;
         return userRepository.save(appUser);
     }
 

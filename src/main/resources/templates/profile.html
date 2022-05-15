@@ -176,6 +176,7 @@
         <li><a href="/app/profile">Home</a></li>
         <li><a href="/app/signin">Sign In</a></li>
         <li><a href="/app/signup">Sign Up</a></li>
+        <li><form th:action="@{/destroy}" method = 'POST'></form><a href="/app/signin">Log out</a></li>
     </ul>
 </header>
 
@@ -184,6 +185,7 @@
     <button class="custom-btn btn-8" ><a href="/app/viewUsers" class="custom-btn btn-8"> View users </a></button>
     <button class="custom-btn btn-8" ><a href="/app/addSalon" class="custom-btn btn-8">Add beauty salon</a></button>
     <button class="custom-btn btn-8" ><a href="/app/listSalons" class="custom-btn btn-8"> View beauty salons</a></button>
+    <button class="custom-btn btn-8" ><a href="/app/addService" class="custom-btn btn-8"> Add services</a></button>
 </div>
 </body>
 </html>

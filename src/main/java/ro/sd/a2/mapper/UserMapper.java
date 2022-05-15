@@ -20,11 +20,11 @@ public class UserMapper {
 
     public static AppUser dtoUserToAppUser(AppUserDTO user){
         return  AppUser.builder().email(user.getEmail()).id(user.getId()).
-                username(user.getUsername()).name(user.getName()).build();
+                username(user.getUsername()).name(user.getName()).userRole(user.getUserRole()).build();
     }
 
     public static AppUserDTO appUserToDtoUser(AppUser user){
         return  AppUserDTO.builder().email(user.getEmail()).username(user.getUsername()).
-                id(user.getId()).name(user.getName()).build();
+                id(user.getId()).name(user.getName()).userRole(user.getUserRole()).build();
     }
 }

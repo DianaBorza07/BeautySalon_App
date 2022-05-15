@@ -15,7 +15,7 @@ public class DummyController {
     @Autowired
     private UserService userService ;
 
-    @GetMapping("/home")
+    //@GetMapping("/home")
     public ResponseEntity<List<AppUserDTO>> getUsers(){
         List<AppUserDTO> userDTOList = userService.getAllUsers();
         if(userDTOList.isEmpty())

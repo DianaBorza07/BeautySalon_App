@@ -2,6 +2,9 @@ package ro.sd.a2.dto;
 
 import lombok.*;
 import org.springframework.stereotype.Component;
+import ro.sd.a2.entity.UserRole;
+
+import java.io.Serializable;
 
 @Builder
 @Setter
@@ -10,7 +13,7 @@ import org.springframework.stereotype.Component;
 @NoArgsConstructor
 @AllArgsConstructor
 @Component
-public class AppUserDTO {
+public class AppUserDTO implements Serializable {
 
     private String id;
 
@@ -19,4 +22,6 @@ public class AppUserDTO {
     private String name;
 
     private String email;
+
+    private UserRole userRole;
 }

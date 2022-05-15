@@ -5,9 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import ro.sd.a2.dto.AppUserDTO;
@@ -19,6 +17,8 @@ import ro.sd.a2.service.ProducerService;
 import ro.sd.a2.service.UserRoleService;
 import ro.sd.a2.service.UserService;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -51,7 +51,6 @@ public class UserController {
 
     @Autowired
     private ProducerService producerService;
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Value("${app.message}")
     private String response;
@@ -71,12 +70,12 @@ public class UserController {
      * Get method for displaying the home page
      * @return model and view for the html page
      */
-   /* @GetMapping("/home")
+    @GetMapping("/home")
     public ModelAndView showHome() {
         ModelAndView mav = new ModelAndView();
         mav.setViewName("home");
         return mav;
-    }*/
+    }
 
     /**
      * Get method for displaying sing in page
@@ -85,7 +84,7 @@ public class UserController {
     @GetMapping("/signin")
     public ModelAndView showSignIn() {
         ModelAndView mav = new ModelAndView();
-        mav.setViewName("signin");
+        mav.setViewName("/signin");
         return mav;
     }
 
@@ -96,7 +95,7 @@ public class UserController {
      * @return model and view for the html page
      */
     @PostMapping("/signin")
-    public ModelAndView signIn(@RequestParam String email, @RequestParam String password){
+    public ModelAndView signIn(@RequestParam String email, @RequestParam String password,HttpServletRequest request){
         ModelAndView mav = new ModelAndView();
         if(StringUtils.isBlank(email))
             insertMessage.append("email ");
@@ -113,8 +112,12 @@ public class UserController {
             AppUserDTO user = userService.getUserByEmailAndPassword(email, password);
             String errorMessage = null;
             if (user != null) {
+                request.getSession().setAttribute("LOGGED_USER", user);
                 log.info("User logged in!");
-                mav.setViewName("/profile");
+                if(user.getUserRole().getRoleName().compareTo("Customer") == 0 )
+                    mav.setViewName("/home");
+                else
+                    mav.setViewName("/profile");
             }
             else {
                 log.error("User not found!");
@@ -134,20 +137,23 @@ public class UserController {
     @GetMapping("/signup")
     public ModelAndView showSignUp() {
         ModelAndView mav = new ModelAndView();
-        mav.setViewName("signup");
+        mav.setViewName("/signup");
         return mav;
     }
-    
+
 
     @RequestMapping(value="/signup", method = RequestMethod.POST)
-    public ResponseEntity<String> sendMessage(@ModelAttribute(value="user") UserLoginDTO user) {
+    public ModelAndView sendMessage(@ModelAttribute(value="user") UserLoginDTO user, HttpServletRequest request) {
         System.out.println("User: "+user.getUsername());
         System.out.println("Email: "+user.getEmail());
         producerService.sendMessage(user);
-        //UserController userController = new UserController();
-        signUp(user.getEmail(),user.getUsername(),user.getPassword(),user.getName());
-        logger.info("email sent: ");
-        return ResponseEntity.ok(response);
+        ModelAndView mav = signUp(user.getEmail(),user.getUsername(),user.getPassword(),user.getName());
+        if(mav.getStatus() == HttpStatus.CREATED) {
+            AppUserDTO appUser = userService.getUserByEmailAndPassword(user.getEmail(),user.getPassword());
+            request.getSession().setAttribute("LOGGED_USER", appUser);
+        }
+        log.info("email sent: ");
+        return mav;
     }
     /**
      * Post method that adds new user into database
@@ -182,12 +188,15 @@ public class UserController {
             AppUser newUser = userService.saveUser(appUser);
 
             if (newUser != null) {
-                mav.setViewName("/profile");
+                mav.setViewName("/home");
                 log.info("User created successfully!");
+                mav.setStatus(HttpStatus.CREATED);
             }
             else {
                 mav.setViewName("/signup");
+                mav.addObject("errorMessage", "User already exists");
                 log.error("Error on creating the user");
+                mav.setStatus(HttpStatus.NOT_MODIFIED);
             }
         }
         return mav;
@@ -200,7 +209,7 @@ public class UserController {
      * @return model and view for the html page
      */
     @PostMapping("/updateProfile")
-    public ModelAndView updateUser(@RequestParam String newEmail,@RequestParam String newUsername){
+    public ModelAndView updateUser(@RequestParam String newEmail, @RequestParam String newUsername, HttpSession session){
         ModelAndView mav = new ModelAndView();
         if(StringUtils.isBlank(newEmail))
             insertMessage.append("new email ");
@@ -213,9 +222,9 @@ public class UserController {
             insertMessage.append("Please insert ");
         }
         else {
-            ///////////// id hardcodat -> trebuie preluat id-ul userului logat
-            AppUserDTO user = AppUserDTO.builder().id("8945449f-c3f8-4278-a4fd-48ae3e857345").username(newUsername).email(newEmail).name("Diana Borza").build();
-            boolean var = userService.updateUser(user);
+            AppUserDTO user = (AppUserDTO) session.getAttribute("LOGGED_USER");
+            AppUserDTO user1 = AppUserDTO.builder().id(user.getId()).username(newUsername).email(newEmail).name(user.getName()).build();
+            boolean var = userService.updateUser(user1);
 
             if (var) {
                 log.info("User updated successfully!");
@@ -250,6 +259,14 @@ public class UserController {
         List<AppUserDTO> userDTOList = userService.getAllUsers();
         mav.addObject("users", userDTOList);
         mav.setViewName("/viewUsers");
+        return mav;
+    }
+
+    @PostMapping("/destroy")
+    public ModelAndView destroySession(HttpServletRequest request) {
+        request.getSession().invalidate();
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/signin");
         return mav;
     }
 
