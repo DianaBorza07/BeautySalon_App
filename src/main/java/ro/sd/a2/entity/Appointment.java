@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 @Builder
 @Setter
 @Getter
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -28,7 +27,7 @@ public class Appointment {
     private AppUser user;
 
     @ManyToOne
-    @JoinColumn(name = "service_id")
+    @JoinColumn(name = "salon_service_id")
     private SalonService salonService;
 
 }

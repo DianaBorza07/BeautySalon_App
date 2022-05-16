@@ -154,6 +154,7 @@
             <th>NAME</th>
             <th>USERNAME</th>
             <th>EMAIL</th>
+            <th>ROLE</th>
         </tr>
         <tr th:each="us : ${users}">
             <form class="align-content-center" th:action="@{/makeAdmin}" method = 'POST' th:object="${user}">

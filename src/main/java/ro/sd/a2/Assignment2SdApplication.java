@@ -3,7 +3,6 @@ package ro.sd.a2;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.time.LocalDateTime;
 
 @SpringBootApplication
 public class Assignment2SdApplication {

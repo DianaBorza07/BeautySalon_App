@@ -3,6 +3,7 @@ package ro.sd.a2.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ro.sd.a2.dto.ScheduleDTO;
+import ro.sd.a2.entity.BeautySalon;
 import ro.sd.a2.entity.Schedule;
 import ro.sd.a2.mapper.ScheduleMapper;
 import ro.sd.a2.repository.ScheduleRepository;
@@ -29,8 +30,8 @@ public class ScheduleService {
         return scheduleDTOList;
     }
 
-    public boolean updateSchedule(LocalDateTime date,boolean available){
-        Schedule schedule = scheduleRepository.findByDayHour(date);
+    public boolean updateSchedule(LocalDateTime date,boolean available,BeautySalon beautySalon){
+        Schedule schedule = scheduleRepository.findByDayHourAndBeautySalon(date,beautySalon);
         schedule.setAvailable(available);
         if(schedule==null)
             return false;
@@ -52,6 +53,10 @@ public class ScheduleService {
             return false;
         }
         return true;
+    }
+
+    public Schedule findByDateAndSalon(LocalDateTime date, BeautySalon beautySalon){
+        return scheduleRepository.findByDayHourAndBeautySalon(date,beautySalon);
     }
 }
 

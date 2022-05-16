@@ -10,7 +10,6 @@ import javax.persistence.OneToOne;
 @Builder
 @Setter
 @Getter
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity

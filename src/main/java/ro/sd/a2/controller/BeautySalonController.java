@@ -1,6 +1,5 @@
 package ro.sd.a2.controller;
 
-import org.hibernate.type.descriptor.java.UUIDTypeDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,6 @@ import ro.sd.a2.dto.BeautySalonDTO;
 import ro.sd.a2.entity.Address;
 import ro.sd.a2.entity.BeautySalon;
 import ro.sd.a2.entity.Schedule;
-import ro.sd.a2.mapper.BeautySalonMapper;
 import ro.sd.a2.service.AddressService;
 import ro.sd.a2.service.BeautySalonService;
 import org.apache.commons.lang3.StringUtils;
