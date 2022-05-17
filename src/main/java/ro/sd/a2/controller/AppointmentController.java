@@ -1,13 +1,18 @@
 package ro.sd.a2.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 import ro.sd.a2.dto.AppUserDTO;
 import ro.sd.a2.dto.AppointmentDTO;
 import ro.sd.a2.dto.BeautySalonDTO;
+import ro.sd.a2.dto.PayloadDTO;
 import ro.sd.a2.entity.*;
 import ro.sd.a2.mapper.AppointmentMapper;
 import ro.sd.a2.service.*;
@@ -38,6 +43,8 @@ public class AppointmentController {
 
     @Autowired
     private SalonServiceService salonServiceService;
+
+    private static final String TOKEN = "b88a21a4-45f0-42bc-9f26-499a403292e6";
 
     @GetMapping("/createAppointment")
     public ModelAndView showCreate(){
@@ -77,6 +84,16 @@ public class AppointmentController {
                     PDFTextEditor pdfTextEditor = new PDFTextEditor(pdfGenerator);
                     String text = appUser.getName()+"#"+scheduleDate.toString()+"#"+beautySalon1.getName()+"#"+salonService.getName()+"#"+salonService.getPrice();
                     pdfTextEditor.generate(text);
+
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.setContentType(MediaType.APPLICATION_JSON);
+                    headers.set(HttpHeaders.AUTHORIZATION, TOKEN);
+
+                    PayloadDTO payloadDTO = PayloadDTO.builder().id(appointment.getId()).username(user.getUsername()).email(user.getEmail()).name(user.getName()).beautySalon(beautySalon1.getName()).date(scheduleDate.toString()).salonService(salonService.getName()).price(salonService.getPrice()).build();
+                    RestTemplate restTemplate = new RestTemplate();
+                    HttpEntity< PayloadDTO > entity = new HttpEntity<>(payloadDTO, headers);
+                    Boolean response= restTemplate.postForObject("http://localhost:8082/sendEmail", entity, Boolean.class);
+
                 }
             }
             else
