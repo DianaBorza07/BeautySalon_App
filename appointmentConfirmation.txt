@@ -1,0 +1,7 @@
+Thank you for choosing Randevular! 
+This is your appointment confirmation:
+Name: Maria S
+Appointment date: 2022-05-03T14:00
+Salon: Radu
+Service: Eyebrow waxing
+Price: 30.0

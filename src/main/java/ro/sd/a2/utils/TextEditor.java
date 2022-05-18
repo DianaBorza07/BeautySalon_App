@@ -7,7 +7,7 @@ import lombok.*;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PDFTextEditor {
+public class TextEditor {
     private TextFormatter textFormatter;
 
     public void generate(String text){

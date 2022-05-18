@@ -8,9 +8,7 @@ import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -43,8 +41,6 @@ public class PDFGenerator implements TextFormatter{
             e.printStackTrace();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-        //} //catch (URISyntaxException e) {
-            //e.printStackTrace();
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {

@@ -5,24 +5,23 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 import ro.sd.a2.dto.AppUserDTO;
 import ro.sd.a2.dto.AppointmentDTO;
-import ro.sd.a2.dto.BeautySalonDTO;
 import ro.sd.a2.dto.PayloadDTO;
 import ro.sd.a2.entity.*;
 import ro.sd.a2.mapper.AppointmentMapper;
 import ro.sd.a2.service.*;
 import ro.sd.a2.utils.PDFGenerator;
-import ro.sd.a2.utils.PDFTextEditor;
+import ro.sd.a2.utils.TextEditor;
+import ro.sd.a2.utils.TextGenerator;
 
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -56,18 +55,18 @@ public class AppointmentController {
         return mav;
     }
 
-    @PostMapping("/createAppointment1")
-    public ModelAndView createAppointment(@ModelAttribute(value="salon") String beautySalon, @RequestParam String service, @RequestParam String date, @RequestParam String time, HttpSession session) {
+    @PostMapping("/createAppointment")
+    public ModelAndView createAppointment(@ModelAttribute(value="salon") String beautySalon, @RequestParam String service, @RequestParam String date, @RequestParam String time,@RequestParam String switchOne, HttpSession session) {
         ModelAndView mav = new ModelAndView();
         List<BeautySalon> beautySalonServiceList = beautySalonService.getAllSalons();
         mav.addObject("beautySalons", beautySalonServiceList);
-        System.out.println(beautySalon+"---------------------------"+service+"  "+date+"  "+time);
         String str = date+" "+time;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         LocalDateTime dateTime = LocalDateTime.parse(str, formatter);
         LocalDateTime scheduleDate = LocalDateTime.of(dateTime.getYear(),dateTime.getMonth(),dateTime.getDayOfMonth(),dateTime.getHour(),0);
         BeautySalon beautySalon1 = beautySalonService.getSalonByName(beautySalon);
         Schedule schedule = scheduleService.findByDateAndSalon(scheduleDate,beautySalon1);
+        mav.setViewName("/createAppointment");
         if(schedule!=null ){
             if(schedule.getAvailable()){
                 AppUserDTO user = (AppUserDTO) session.getAttribute("LOGGED_USER");
@@ -80,10 +79,18 @@ public class AppointmentController {
                             .user(appUser).beautySalon(beautySalon1).salonService(salonService).build();
                     appointmentService.saveAppointment(appointment);
                     mav.addObject("successMessage","Appoint made successfully!");
-                    PDFGenerator pdfGenerator = new PDFGenerator();
-                    PDFTextEditor pdfTextEditor = new PDFTextEditor(pdfGenerator);
                     String text = appUser.getName()+"#"+scheduleDate.toString()+"#"+beautySalon1.getName()+"#"+salonService.getName()+"#"+salonService.getPrice();
-                    pdfTextEditor.generate(text);
+
+                    if(switchOne.compareTo("txt")==0){
+                        TextGenerator textGenerator = new TextGenerator();
+                        TextEditor textEditor = new TextEditor(textGenerator);
+                        textEditor.generate(text);
+                    }
+                    else{
+                        PDFGenerator pdfGenerator = new PDFGenerator();
+                        TextEditor textEditor = new TextEditor(pdfGenerator);
+                        textEditor.generate(text);
+                    }
 
                     HttpHeaders headers = new HttpHeaders();
                     headers.setContentType(MediaType.APPLICATION_JSON);
@@ -92,8 +99,14 @@ public class AppointmentController {
                     PayloadDTO payloadDTO = PayloadDTO.builder().id(appointment.getId()).username(user.getUsername()).email(user.getEmail()).name(user.getName()).beautySalon(beautySalon1.getName()).date(scheduleDate.toString()).salonService(salonService.getName()).price(salonService.getPrice()).build();
                     RestTemplate restTemplate = new RestTemplate();
                     HttpEntity< PayloadDTO > entity = new HttpEntity<>(payloadDTO, headers);
-                    Boolean response= restTemplate.postForObject("http://localhost:8082/sendEmail", entity, Boolean.class);
 
+                    try {
+                        Boolean response = restTemplate.postForObject("http://localhost:8082/sendEmail", entity, Boolean.class);
+
+                    }catch (RestClientException e){
+                        System.out.println("Server unavailable");
+                        //e.printStackTrace();
+                    }
                 }
             }
             else
@@ -101,8 +114,6 @@ public class AppointmentController {
         }
         else
             mav.addObject("errorMessage","Invalid appointment. Please select another date");
-
-        mav.setViewName("/createAppointment");
         return mav;
     }
 
