@@ -1,7 +1,7 @@
 Thank you for choosing Randevular! 
 This is your appointment confirmation:
-Name: Maria S
-Appointment date: 2022-05-03T14:00
-Salon: Radu
-Service: Eyebrow waxing
-Price: 30.0
+Name: Diana
+Appointment date: 2022-05-20T11:00
+Salon: Zina
+Service: Long cut
+Price: 120.0

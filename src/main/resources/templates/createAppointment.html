@@ -325,7 +325,7 @@
 
         .switch-field {
             display: flex;
-            margin-bottom: 36px;
+            margin-bottom: 3px;
             overflow: hidden;
         }
 
@@ -356,7 +356,7 @@
         }
 
         .switch-field input:checked + label {
-            background-color: #80dbc7;
+            background-color: #51bcee;
             box-shadow: none;
         }
 
@@ -400,18 +400,19 @@
                 </div>
             </td>
 
+            <td>
+                <div class="switch-field">
+                    <input type="radio" th:id="${bs.getId()}" name="switchOne" value="pdf" checked/>
+                    <label th:for="${bs.getId()}">PDF</label>
+                    <input type="radio" th:id="${bs.getId()+1}" name="switchOne" value="txt" />
+                    <label th:for="${bs.getId()+1}">TXT</label>
+                </div>
+            </td>
+
             <td><input type="hidden" th:value="${bs.getName()}" name="salon"/>
                 <button type="submit">
                     Confirm
                 </button>
-            </td>
-            <td>
-            <div class="switch-field">
-                <input type="radio" th:id="${bs.getId()}" name="switchOne" value="pdf" checked/>
-                <label th:for="${bs.getId()}">PDF</label>
-                <input type="radio" th:id="${bs.getId()+1}" name="switchOne" value="txt" />
-                <label th:for="${bs.getId()+1}">TXT</label>
-            </div>
             </td>
         </form>
     </tr>
